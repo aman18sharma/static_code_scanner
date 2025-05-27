@@ -1,0 +1,25 @@
+name: Security Scan with Trivy
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  trivy-scan:
+    name: Trivy Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      # Optional: Scan source code files (IaC, etc.)
+      - name: Scan file system with Trivy
+        run: |
+          trivy fs --exit-code 1 --severity CRITICAL,HIGH .
